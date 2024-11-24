@@ -1,101 +1,127 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
+import { Timeline } from '@/components/timeline/timeline';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+const timelineData = {
+  tracks: ['Mindset', 'Admin', 'Health', 'Job', 'Misc'],
+  tasks: [
+    {
+      id: '1',
+      title: 'Take ownership of your transition',
+      track: 'Mindset',
+      startMonth: 60,
+      endMonth: 58,
+    },
+    {
+      id: '2',
+      title: 'Create login.gov account',
+      track: 'Admin',
+      startMonth: 59,
+      endMonth: 57,
+      link: 'https://login.gov',
+    },
+    {
+      id: '3',
+      title: 'Schedule medical appointments',
+      track: 'Health',
+      startMonth: 58,
+      endMonth: 54,
+    },
+    {
+      id: '4',
+      title: 'Learn basics of resume creation',
+      track: 'Job',
+      startMonth: 56,
+      endMonth: 52,
+      link: 'https://www.resume.com/resume-help',
+    },
+    {
+      id: '5',
+      title: 'Plan your final PCS',
+      track: 'Misc',
+      startMonth: 54,
+      endMonth: 50,
+    },
+    {
+      id: '6',
+      title: 'Determine GI Bill eligibility',
+      track: 'Admin',
+      startMonth: 48,
+      endMonth: 46,
+    },
+    {
+      id: '7',
+      title: 'Create LinkedIn profile',
+      track: 'Job',
+      startMonth: 45,
+      endMonth: 43,
+      link: 'https://www.linkedin.com',
+    },
+    {
+      id: '8',
+      title: 'Schedule informational interviews',
+      track: 'Job',
+      startMonth: 40,
+      endMonth: 20,
+    },
+    {
+      id: '9',
+      title: 'Prepare for VA disability claim',
+      track: 'Health',
+      startMonth: 36,
+      endMonth: 30,
+    },
+    {
+      id: '10',
+      title: 'Attend TAP class',
+      track: 'Admin',
+      startMonth: 24,
+      endMonth: 22,
+    },
+  ],
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [separationDate, setSeparationDate] = useState<Date>(() => {
+    const date = new Date();
+    date.setMonth(date.getMonth() + 60);
+    return date;
+  });
+  const [inputDate, setInputDate] = useState<string>(() => {
+    const date = new Date();
+    date.setMonth(date.getMonth() + 60);
+    return date.toISOString().split('T')[0];
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputDate(e.target.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newDate = new Date(inputDate);
+    if (!isNaN(newDate.getTime())) {
+      setSeparationDate(newDate);
+    } else {
+      alert('Please enter a valid date');
+    }
+  };
+
+  return (
+    <main className="container mx-auto p-4">
+      <h1 className="mb-4 text-2xl font-bold">Military Transition Timeline</h1>
+      <form onSubmit={handleSubmit} className="mb-4 flex items-end gap-4">
+        <div>
+          <Label htmlFor="separation-date">Separation Date</Label>
+          <Input type="date" id="separation-date" value={inputDate} onChange={handleDateChange} required />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <Button type="submit">Update Timeline</Button>
+      </form>
+      <Timeline data={timelineData} separationDate={separationDate} />
+    </main>
   );
 }
